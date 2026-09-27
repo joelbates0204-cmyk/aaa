@@ -1,0 +1,2715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="manifest" href="./mysagov.webmanifest" />
+    <link rel="icon" href="./icon.png">
+    <meta content="width=390, initial-scale=1.0, user-scalable=no" name="viewport">
+    <meta name="theme-color" content="#000000" id="theme-color-meta">
+    <script src="./shake.js"></script>
+    <script src="./hammer.min.js"></script>
+
+
+    <title>SA Digital Wallet Demo</title>
+    <style>
+        @font-face {
+            font-family: "Lato";
+            src: url("./Lato-Regular.ttf");
+        }
+
+        @font-face {
+            font-family: "LatoBold";
+            src: url("./Lato-Bold.ttf");
+        }
+
+
+        .main {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            background-color: #1A2830;
+            z-index: 2;
+            max-width: 550px;
+
+        }
+
+        * {
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        p {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            pointer-events: none;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+
+        }
+
+        img.fake {
+            position: absolute;
+            right: 0px;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: black;
+            position: relative;
+            width: 100%;
+            height: 44px;
+        }
+
+        .header2 {
+            background-color: #0D5A20;
+            position: relative;
+            width: 100%;
+            height: calc(5% + 5px);
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1
+        }
+
+        .header2>div {
+            width: 50%
+        }
+
+        .header2>div>p {
+            position: relative;
+            width: 100%;
+            top: 0px;
+            text-align: center;
+            color: white;
+            font-family: "Lato";
+            font-size: 15px;
+            margin: 10px;
+            -webkit-font-smoothing: antialiased;
+            transition: 0.3s;
+        }
+
+
+
+        .slideUpAuth>.header {
+            background-color: #0D5A20;
+        }
+
+        .slideUpAuth>.header>img {
+            top: 4px
+        }
+
+        .settings {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            bottom: 12px;
+            left: 16px;
+            fill: #8e9dff;
+            transition: 0.1s;
+        }
+
+        .plus {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            bottom: 13px;
+            right: 16px;
+            opacity: 1;
+            transition: 0.3s
+        }
+
+        .full {
+            position: absolute;
+            width: calc(100% - 30px);
+            bottom: 2px;
+            right: 20px;
+        }
+
+
+        .list {
+            position: absolute;
+            top: 44px;
+            width: 100%;
+            left: 0;
+            padding: 16px;
+            box-sizing: border-box;
+            height: calc(100vh - 44px);
+            overflow-y: scroll;
+
+        }
+
+        .license {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            background-color: #0D5A20;
+            border-radius: 3px;
+            box-sizing: border-box;
+            padding: 0 16px;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s ease-out;
+        }
+
+        .licenseText {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .licenseTitle {
+            color: white;
+            font-family: "LatoBold";
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.2;
+            pointer-events: none;
+        }
+
+        .licenseSub {
+            color: rgba(255, 255, 255, 0.75);
+            font-family: "Lato";
+            font-size: 14px;
+            margin: 0;
+            margin-top: 2px;
+            line-height: 1.2;
+            pointer-events: none;
+        }
+
+        .wheel {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .license>img {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .slideUp {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            transition: 0.3s ease-in-out;
+            z-index: 3;
+
+        }
+
+        .slideUpAuth {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            height: 99%;
+            background-color: #0D5A20;
+            border-radius: 15px 15px 0 0;
+            transition: 0.3s;
+            overflow: hidden;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slideUpAuth>.header {
+            background-color: #0D5A20;
+        }
+
+        .pin {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 30px;
+            box-sizing: border-box;
+        }
+
+        .pin>p {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: "Lato";
+            font-size: 15px;
+            margin: 0;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .pinDots {
+            display: flex;
+            gap: 22px;
+            margin-top: 28px;
+        }
+
+        .pinDot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: 0.15s;
+        }
+
+        .pinDot.filled {
+            background: #ffffff;
+        }
+
+        .pinKeypad {
+            flex-shrink: 0;
+            background: #c8cdd3;
+            padding: 8px 4px;
+            padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+        }
+
+        .pinKeypad-row {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 7px;
+        }
+
+        .pinKey {
+            width: calc(33.33% - 7px);
+            max-width: 130px;
+            height: 46px;
+            background: #ffffff;
+            border: none;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+        }
+
+        .pinKey:active {
+            background: #d4d6da;
+        }
+
+        .pinKey-num {
+            color: #000;
+            font-family: -apple-system, "Helvetica Neue", sans-serif;
+            font-size: 25px;
+            font-weight: 300;
+            line-height: 1;
+        }
+
+        .pinKey-letters {
+            color: #000;
+            font-family: -apple-system, "Helvetica Neue", sans-serif;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 1.8px;
+            margin-top: 1px;
+        }
+
+        .pinKey-empty {
+            background: transparent;
+            box-shadow: none;
+            pointer-events: none;
+        }
+
+        .pinKey-back {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .pinKey-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #000;
+        }
+
+        .header>h {
+            position: absolute;
+            width: 100vw;
+            bottom: 19px;
+            text-align: center;
+            color: white;
+            font-family: "LatoBold";
+            font-size: 17px;
+            line-height: 20px;
+            opacity: 1;
+            transition: 0.3s
+        }
+
+        .licenceContent {
+            position: absolute;
+            top: 10.5%;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            height: calc(100% - 10% - 5px);
+            width: 100vw;
+            left: 0;
+            overflow-y: scroll;
+            scroll-snap-type: x mandatory;
+            flex-shrink: 0;
+            padding: 0;
+
+        }
+
+        .licenceContent>div {
+            scroll-snap-align: center;
+
+        }
+
+        .licenseMain {
+            display: flex;
+            position: relative;
+            min-width: 100vw;
+            height: 100%;
+            flex-direction: column;
+            transition: 0.8s;
+
+        }
+
+        .label {
+            font-family: "Arial";
+            color: #818085;
+            margin-top: 0;
+            margin-bottom: 0;
+            -webkit-font-smoothing: antialiased
+        }
+
+        .id {
+            color: #030303;
+            font-family: "Arial";
+            margin-top: 0;
+            margin-bottom: 0;
+            letter-spacing: 0.5px;
+            -webkit-font-smoothing: antialiased
+        }
+
+        .bg {
+            position: absolute;
+            opacity: 0.1;
+            left: 26px;
+            top: 30px;
+            max-height: 136px;
+
+        }
+
+        .label.a {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            font-size: 15px
+        }
+
+        .id.a {
+            position: absolute;
+            top: 40px;
+            left: 15px;
+            font-size: 18px
+        }
+
+
+        .label.b {
+            position: absolute;
+            top: 80px;
+            left: 15px;
+            font-size: 15px;
+        }
+
+        .id.b {
+            position: absolute;
+            top: 100px;
+            left: 15px;
+            font-size: 18px
+        }
+
+        .label.c {
+            position: absolute;
+            top: 140px;
+            left: 15px;
+            font-size: 15px;
+        }
+
+        .id.c {
+            position: absolute;
+            top: 160px;
+            left: 15px;
+            font-size: 18px
+        }
+
+        .label.d {
+            position: absolute;
+            top: 46px;
+            left: 15px;
+            font-size: 15px;
+        }
+
+        .id.d {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .photo {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+            border-radius: 6px;
+            width: calc(46% - 15px);
+            height: 210px;
+            overflow: hidden;
+            backdrop-filter: opacity(0%);
+            z-index: 1;
+            transition: backdrop-filter 2s
+        }
+
+
+
+        .cross {
+            position: absolute;
+        }
+
+        .animation {
+            position: absolute;
+            width: 100%;
+            height: 0;
+            bottom: 0;
+            background-color: rgba(13, 90, 32, 0.7);
+            animation: none;
+            opacity: 1;
+        }
+
+        .go {
+            animation: idPhoto 4s linear forwards;
+        }
+
+        @keyframes idPhoto {
+            0% {
+                height: 5%;
+                opacity: 1
+            }
+
+            10% {
+                height: 100%;
+                opacity: 1
+            }
+
+            90% {
+                height: 100%;
+                opacity: 1
+            }
+
+            95% {
+                height: 100%;
+                opacity: 0
+            }
+
+            99% {
+                height: 100%;
+                opacity: 0
+            }
+
+            100% {
+                height: 0;
+                opacity: 0
+            }
+        }
+
+
+        .go3 {
+            animation: none;
+        }
+
+        .animation>.text {
+            color: white;
+            font-family: "helvetica";
+            font-size: 2.92rem;
+            text-wrap: wrap;
+            width: 100%;
+            top: 27%;
+            font-weight: 500;
+            text-align: center;
+            position: absolute;
+        }
+
+        b {
+            font-size: 2.17rem;
+            font-family: "helvetica";
+            font-weight: 700
+        }
+
+        .licenseMain>div {
+            position: relative;
+            width: 100%;
+        }
+
+        .line {
+            width: 100%;
+            height: 1px;
+            border-bottom: 0.7px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .block {
+            background-color: #4E5B63;
+            box-sizing: border-box;
+            padding: 10px;
+            padding-top: 7px;
+            padding-bottom: 7px;
+            border-radius: 4px;
+            width: max-content !important;
+            color: white;
+            left: 15px;
+            position: absolute;
+            top: 60px;
+            font-family: "Lato";
+            font-size: 13px
+        }
+
+        .id-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            pointer-events: auto;
+        }
+
+
+        .bottom {
+            height: 200px;
+            bottom: 0;
+        }
+
+        .barcode {
+            width: calc(100% - 40px);
+            position: absolute;
+            left: 20px;
+            bottom: 55px;
+        }
+
+        .validate {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 56px;
+            padding: 0;
+            background-color: #FFFFFF;
+            overflow: hidden;
+            border-radius: 999px;
+            z-index: 2;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            opacity: 1;
+            transition: 0.3s;
+        }
+
+        .validate>img {
+            height: 22px;
+        }
+
+        .validate>p {
+            font-family: "Lato";
+            color: #788AE7;
+            font-size: 17px;
+            margin: 0;
+            pointer-events: auto;
+        }
+
+        .detailsMain {
+            display: flex;
+            position: relative;
+            min-width: 100vw;
+            max-width: 100vw;
+            height: 100%;
+            flex-direction: column;
+            transition: 0.8s;
+            padding-left: 15px;
+            padding-right: 15px;
+            box-sizing: border-box;
+            gap: 5px;
+            overflow-x: hidden
+        }
+
+
+        .slideUp:has(.detailsMain.show)>.licenseMain {
+            left: -100%
+        }
+
+        .slideUp:has(.detailsMain.show)>.detailsMain {
+            left: 0%;
+        }
+
+
+        .intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1A2830;
+            z-index: 5;
+            transition: 0.3s;
+            opacity: 1;
+        }
+
+        .intro>img {
+            top: 40%;
+            width: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            position: absolute;
+
+        }
+
+        .introbye {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .slideUpSetup {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            height: 99%;
+            background-color: #1A2830;
+            transition: 0.8s;
+            overflow: hidden;
+            z-index: 3;
+
+        }
+
+        .slideUpSetup>input {
+            position: absolute;
+            top: 40%;
+            width: 200px;
+            height: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .slideUpSetup>button {
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            height: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .slideUpSetup.active {
+            top: 0%;
+        }
+
+
+
+        .lable1 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 20px;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+
+        }
+
+        .text1 {
+            color: #000000;
+            font-family: "Arial";
+            margin-top: 5px;
+            margin-bottom: 0;
+            letter-spacing: 0.5px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .lable2 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 5px;
+            margin-bottom: 0;
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .text2 {
+            color: #41A147;
+            font-family: 'LatoBold';
+            font-weight: bold;
+            margin-top: 8px;
+            margin-bottom: 0;
+            letter-spacing: 0.5px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 22px;
+
+        }
+
+        .lable3 {
+            color: #000000;
+            font-family: "Arial";
+            margin-top: 0;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .lable4 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 0;
+            margin-bottom: 0;
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .text3 {
+            color: #7e89da;
+            font-family: "Arial";
+            margin-top: 16px;
+            margin-bottom: 9px;
+            letter-spacing: 0.5px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .lable5 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 7px;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .text4 {
+            color: #000000;
+            font-family: "Arial";
+            margin-top: 4px;
+            margin-bottom: 0;
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        b.aaa {
+            font-size: 15px !important;
+        }
+
+        .text5 {
+            color: #7e89da;
+            font-family: "Arial";
+            margin-top: 18px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .lable6 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 9px;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .siggy {
+            margin-top: 15px;
+            position: relative;
+            width: calc(100% - 30px);
+            margin-bottom: 14px;
+        }
+
+        .lable7 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 9px;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .text6 {
+            color: #000000;
+            font-family: "Arial";
+            margin-top: 6px;
+            margin-bottom: 3px;
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .lable8 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 9px;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .text7 {
+            color: #000000;
+            font-family: "Arial";
+            margin-top: 4px;
+            margin-bottom: 0;
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .lable9 {
+            color: #818085;
+            font-family: "Arial";
+            margin-top: 9px;
+            margin-bottom: 0;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 13px;
+        }
+
+        .text8 {
+            color: #000000;
+            font-family: "Arial";
+            margin-top: 4px;
+            margin-bottom: 0;
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+
+        .slideUpPWA {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            height: 99%;
+            background-color: #1A2830;
+            transition: 0.8s;
+            overflow: hidden;
+            z-index: 2;
+
+
+        }
+
+        .detailsMain>.line {
+            position: relative;
+            margin-top: 10px;
+            height: 2px;
+            width: 100vw;
+            transform: translateX(-15px);
+        }
+
+        .detailsMain>.line>div {
+            height: 1px;
+
+        }
+
+        .slideUpPWA.active {
+            top: 0;
+        }
+
+        .safari1 {
+            position: absolute;
+            top: 100px;
+            left: 30%;
+            width: 40%;
+            background-color: white;
+            border-radius: 15px;
+            ;
+        }
+
+        .safari2 {
+            position: absolute;
+            top: 300px;
+            left: 30%;
+            width: 40%;
+
+        }
+
+        .safari3 {
+            position: absolute;
+            top: 500px;
+            left: 20%;
+            width: 60%;
+
+        }
+
+        .fileLabel {
+            position: absolute;
+            width: 40%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: "Lato";
+            font-size: 20px;
+            box-sizing: border-box;
+            padding: 10px;
+            background-color: #669dc0;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .fileLabel2 {
+            position: absolute;
+            width: 40%;
+            top: calc(50% + 100px);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: "Lato";
+            font-size: 20px;
+            box-sizing: border-box;
+            padding: 10px;
+            background-color: #669dc0;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        .yellowBar {
+            position: absolute;
+            bottom: 0;
+            width: 50vw !important;
+            height: 4px;
+            background-color: #2E8B3E !important;
+            transition: 0.4s
+        }
+
+        .left {
+            left: 0%;
+        }
+
+        .right {
+            left: 50%
+        }
+
+        .fullScreenPhoto {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0);
+            transition: width 0.3s, right 0s, top 0s, aspect-ratio 0.3s, border-radius 0.3s, transform 0.2s, -webkit-transform 0.2s, background-color 0.3s, outline 0.3s;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .fullScreenPhoto.show {
+            pointer-events: all;
+            opacity: 1;
+            background-color: rgba(0, 0, 0, 1);
+            outline: 500px black rgba(0, 0, 0, 1)
+        }
+
+        .id-img2 {
+            position: relative;
+            right: 15px;
+            top: 0px;
+            width: calc(50vw - 15px);
+            transition: width 0.3s, right 0.3s, top 0.3s, aspect-ratio 0.3s, border-radius 0.3s, transform 0.2s, -webkit-transform 0.2s, background-color 0.3s;
+            border-radius: 8px;
+            animation: identifier1 0.33s linear forwards;
+            transform: translate(27.2vw, -50vw);
+            aspect-ratio: 182/201;
+        }
+
+
+        @keyframes identifier1 {
+            0% {
+                opacity: 1;
+            }
+
+            99% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0
+            }
+        }
+
+        .fullScreenPhoto.show>.id-img2 {
+            position: relative;
+            border-radius: 0px;
+            top: 0;
+            right: 0px;
+            width: 100vw;
+            aspect-ratio: 55/61;
+            animation: none;
+            transform: translate(0, 0);
+            z-index: 1
+        }
+
+        .fullScreenPhoto>.x {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-family: "Lato";
+            color: white;
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 5
+        }
+
+        .fullScreenPhoto.show>.x {
+            opacity: 1;
+        }
+
+        .x>svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        * {
+            touch-action: manipulation;
+        }
+
+        .header2:has(.yellowBar.left)>.second>p {
+            color: rgba(255, 255, 255, 0.65)
+        }
+
+        .header2:has(.yellowBar.right)>.first>p {
+            color: rgba(255, 255, 255, 0.65)
+        }
+
+        .renewSect {
+            position: relative;
+            height: 110px;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .renewSect>img {
+            position: relative;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            transform: translateY(-100%)
+        }
+
+        .renewSect>p {
+            position: relative;
+            top: 50%;
+            transform: translateY(-100%);
+            color: rgba(20, 20, 20);
+            font-family: "Arial";
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .suppSec {
+            position: relative;
+            height: 60px;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: -5px
+        }
+
+        .suppSec>img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .suppSec>p {
+            color: rgba(20, 20, 20);
+            font-family: "Arial";
+            letter-spacing: 0.3px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            font-size: 15px;
+            line-height: 20px
+        }
+
+        .suppSec>p>u {
+            text-decoration: none;
+            color: #818085;
+        }
+
+        .govfoot {
+            position: relative;
+            width: 100%;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .settingsMain:not(.shown) {
+            position: absolute;
+            top: 5%;
+            height: 95vh;
+            width: 100%;
+            background-color: #f3f2f8;
+            left: 100%;
+            transition: 0.4s;
+            z-index: 3
+        }
+
+        .settingsMain {
+            position: absolute;
+            top: 5%;
+            height: 95vh;
+            width: 100%;
+            background-color: #f3f2f8;
+            left: 0%;
+            transition: 0.4s;
+            z-index: 3
+        }
+
+
+
+
+        .settingsMain.shown {
+            left: 0% !important;
+        }
+
+        .main:has(.settingsMain.shown)>.header>.plus {
+            opacity: 0
+        }
+
+        .main:has(.settingsMain.shown)>.header>h {
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+
+        .settingsMain>h {
+            position: absolute;
+            top: calc(-5% + 2px);
+            width: 100vw;
+            text-align: center;
+            left: 0;
+            color: white;
+            font-family: "LatoBold";
+            font-size: 18px;
+            opacity: 1;
+            transition: 0.3s
+        }
+
+        .settingsMain>div:has(svg) {
+            position: absolute;
+            top: calc(-5%);
+            height: 5%;
+            width: 100px;
+            left: 0;
+        }
+
+        .settingsMain>div>svg {
+            fill: #8e9dff;
+            height: 60%;
+            position: relative;
+            left: 10px;
+            width: 30px;
+            top: 3px;
+        }
+
+        .settingsMain>div>p {
+            color: #8e9dff;
+            position: absolute;
+            top: 35%;
+            transform: translateY(-50%);
+            width: max-content;
+            text-align: center;
+            left: 40px;
+            font-family: "Lato";
+            font-size: 17px;
+            opacity: 1;
+            transition: 0.3s;
+            margin: 0;
+        }
+
+        .main:has(.settingsMain.shown)>.header>.settings {
+            opacity: 0
+        }
+
+        .main:has(.settingsMain.shown)>.list>.license {
+            transform: translateX(-200px);
+        }
+
+        .settingsMain>.setList {
+            display: flex;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 95vh;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .settingsMain>.setList>div {
+            position: relative;
+            width: 100%;
+            background-color: white;
+            border-bottom: 1px solid rgba(230, 230, 230, 1);
+            height: 43px;
+            transition: 0.2s
+        }
+
+        .settingsMain>.setList>div.spacer {
+            background-color: transparent !important;
+        }
+
+        .settingsMain>.setList>div:not(.spacer.nohov):hover,
+        .settingsMain>.setList>div:not(.spacer.nohov):active {
+            background-color: rgba(220, 220, 220, 1)
+        }
+
+        .settingsMain>.setList>div>p {
+            color: #141414;
+            font-family: "Arial";
+            letter-spacing: 0.05px;
+            -webkit-font-smoothing: antialiased;
+            position: absolute;
+            font-size: 17px;
+            height: 100%;
+            left: 16px;
+            width: max-content;
+            text-align: center;
+            line-height: 43px;
+            margin: 0;
+        }
+
+        .settingsMain>.setList>div>svg {
+            position: absolute;
+            height: 33%;
+            top: 33%;
+            aspect-ratio: 1;
+            fill: rgb(200, 200, 200);
+            transform: scaleX(-1);
+            right: 15px;
+
+        }
+
+        .settingsMain>.setList>div.spacer>p {
+            color: #818085;
+            font-family: "Arial";
+            font-size: 13px;
+            transform: translateY(-5px)
+        }
+
+        /* The switch - the box around the slider */
+        .switch {
+            position: absolute;
+            display: inline-block;
+            width: 50px;
+            height: 30px;
+            top: 7px;
+            right: 15px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #8e9dff;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        body:has(.settingsMain.shown)>.validate,
+        body:has(.main>.slideUpSetup.active)>.validate {
+            opacity: 0;
+        }
+
+        .bypassZone {
+            position: absolute;
+            width: 100vw;
+            bottom: 0;
+            height: 200px;
+        }
+
+        .fullScreenPhoto:not(.show)>.x {
+            display: none
+        }
+
+        .lBlock {
+            position: relative;
+            height: 83vh;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .lds-spinner,
+        .lds-spinner div,
+        .lds-spinner div:after {
+            box-sizing: border-box;
+        }
+
+        .lds-spinner {
+            color: rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            top: -10vh;
+            left: 50%;
+            transform: scale(0.5) translateX(calc(-50% - 40px));
+        }
+
+        .lds-spinner div {
+            transform-origin: 40px 40px;
+            animation: lds-spinner 1.2s linear infinite;
+        }
+
+        .lds-spinner div:after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 3.2px;
+            left: 36.8px;
+            width: 6.4px;
+            height: 17.6px;
+            border-radius: 20%;
+            background: currentColor;
+        }
+
+        .lds-spinner div:nth-child(1) {
+            transform: rotate(0deg);
+            animation-delay: -1.1s;
+        }
+
+        .lds-spinner div:nth-child(2) {
+            transform: rotate(30deg);
+            animation-delay: -1s;
+        }
+
+        .lds-spinner div:nth-child(3) {
+            transform: rotate(60deg);
+            animation-delay: -0.9s;
+        }
+
+        .lds-spinner div:nth-child(4) {
+            transform: rotate(90deg);
+            animation-delay: -0.8s;
+        }
+
+        .lds-spinner div:nth-child(5) {
+            transform: rotate(120deg);
+            animation-delay: -0.7s;
+        }
+
+        .lds-spinner div:nth-child(6) {
+            transform: rotate(150deg);
+            animation-delay: -0.6s;
+        }
+
+        .lds-spinner div:nth-child(7) {
+            transform: rotate(180deg);
+            animation-delay: -0.5s;
+        }
+
+        .lds-spinner div:nth-child(8) {
+            transform: rotate(210deg);
+            animation-delay: -0.4s;
+        }
+
+        .lds-spinner div:nth-child(9) {
+            transform: rotate(240deg);
+            animation-delay: -0.3s;
+        }
+
+        .lds-spinner div:nth-child(10) {
+            transform: rotate(270deg);
+            animation-delay: -0.2s;
+        }
+
+        .lds-spinner div:nth-child(11) {
+            transform: rotate(300deg);
+            animation-delay: -0.1s;
+        }
+
+        .lds-spinner div:nth-child(12) {
+            transform: rotate(330deg);
+            animation-delay: 0s;
+        }
+
+        @keyframes lds-spinner {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+
+<style id="demo-label-style">
+  #demo-label {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    height: 24px;
+    box-sizing: border-box;
+    background: #b00020;
+    color: #fff;
+    font: 700 12px/24px Arial, sans-serif;
+    text-align: center;
+    letter-spacing: .3px;
+    pointer-events: none;
+  }
+</style>
+</head>
+
+<body width="390px">
+    <div class="intro">
+        <img src="./mysagov.jpeg" />
+    </div>
+    <div class="main">
+        <div class="scannerOverlay" id="scannerOverlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:100;background:#000;">
+            <video id="scannerVideo" autoplay playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;"></video>
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 20px 0 20px;padding-top:env(safe-area-inset-top,20px);">
+                    <svg onclick="closeScanner()" style="width:28px;height:28px;cursor:pointer;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span style="color:white;font-family:'Lato';font-size:15px;">Need help</span>
+                        <div style="width:22px;height:22px;border-radius:50%;border:2px solid white;display:flex;align-items:center;justify-content:center;">
+                            <span style="color:white;font-family:'LatoBold';font-size:13px;">?</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+                    <div style="width:70vw;height:40vh;position:relative;">
+                        <div style="position:absolute;top:0;left:0;width:35px;height:35px;border-top:4px solid white;border-left:4px solid white;border-radius:4px 0 0 0;"></div>
+                        <div style="position:absolute;top:0;right:0;width:35px;height:35px;border-top:4px solid white;border-right:4px solid white;border-radius:0 4px 0 0;"></div>
+                        <div style="position:absolute;bottom:0;left:0;width:35px;height:35px;border-bottom:4px solid white;border-left:4px solid white;border-radius:0 0 0 4px;"></div>
+                        <div style="position:absolute;bottom:0;right:0;width:35px;height:35px;border-bottom:4px solid white;border-right:4px solid white;border-radius:0 0 4px 0;"></div>
+                    </div>
+                </div>
+                <div style="padding:0 30px 20px 30px;text-align:center;">
+                    <p style="color:white;font-family:'Lato';font-size:15px;line-height:1.4;margin:0 0 40px 0;">Align the barcode of a digital licence<br>within frame to verify</p>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:env(safe-area-inset-bottom,30px);">
+                        <span style="font-size:22px;">&#9888;</span>
+                        <p style="color:white;font-family:'Lato';font-size:12.5px;margin:0;text-align:left;">Only licences using the mySAGOV<br>app can be scanned</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="validate" onclick="openScanner()">
+            <img src="./validate.png" />
+            <p>Validate</p>
+        </div>
+        <div class="fullScreenPhoto" id="fullScreenPhoto" onscroll="(e)=>{e.preventDefault()}">
+            <div class="x"><svg fill="#ffffff" height="200px" width="200px" version="1.1" id="Capa_1"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 460.775 460.775" xml:space="preserve" stroke="#ffffff">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path
+                            d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55 c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55 c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505 c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55 l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719 c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z">
+                        </path>
+                    </g>
+                </svg></div>
+
+            <img class="id-img2" id='idImg2' src="" />
+
+        </div>
+        <div class="header">
+            <h>Credentials</h>
+            <span id="refreshText" style="position:absolute;bottom:5px;width:100%;text-align:center;color:rgba(255,255,255,0.5);font-family:'Lato';font-size:12px;line-height:14px;">Refreshed just now</span>
+            <input type="tel" inputmode="numeric" pattern="[0-9]*"
+                id="focusme" style="opacity:0;height:0px;width:0px;position:absolute;" />
+            <svg class="settings" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0,0,256,256" width="48px" height="48px">
+                <g fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter"
+                    stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none"
+                    font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                    <g transform="scale(5.33333,5.33333)">
+                        <path
+                            d="M39.6,27.2c0.1,-0.7 0.2,-1.4 0.2,-2.2c0,-0.8 -0.1,-1.5 -0.2,-2.2l4.5,-3.2c0.4,-0.3 0.6,-0.9 0.3,-1.4l-4.4,-7.4c-0.3,-0.5 -0.8,-0.7 -1.3,-0.4l-5,2.3c-1.2,-0.9 -2.4,-1.6 -3.8,-2.2l-0.5,-5.5c-0.1,-0.5 -0.5,-0.9 -1,-0.9h-8.6c-0.5,0 -1,0.4 -1,0.9l-0.5,5.5c-1.4,0.6 -2.7,1.3 -3.8,2.2l-5,-2.3c-0.5,-0.2 -1.1,0 -1.3,0.4l-4.3,7.4c-0.3,0.5 -0.1,1.1 0.3,1.4l4.5,3.2c-0.1,0.7 -0.2,1.4 -0.2,2.2c0,0.8 0.1,1.5 0.2,2.2l-4.7,3.2c-0.4,0.3 -0.6,0.9 -0.3,1.4l4.3,7.4c0.3,0.5 0.8,0.7 1.3,0.4l5,-2.3c1.2,0.9 2.4,1.6 3.8,2.2l0.5,5.5c0.1,0.5 0.5,0.9 1,0.9h8.6c0.5,0 1,-0.4 1,-0.9l0.5,-5.5c1.4,-0.6 2.7,-1.3 3.8,-2.2l5,2.3c0.5,0.2 1.1,0 1.3,-0.4l4.3,-7.4c0.3,-0.5 0.1,-1.1 -0.3,-1.4zM24,35c-5.5,0 -10,-4.5 -10,-10c0,-5.5 4.5,-10 10,-10c5.5,0 10,4.5 10,10c0,5.5 -4.5,10 -10,10z" />
+                        <path xmlns="http://www.w3.org/2000/svg"
+                            d="M 24 13 c -6.6 0 -12 5.4 -12 12 c 0 6.6 5.4 12 12 12 c 6.6 0 12 -5.4 12 -12 c 0 -6.6 -5.4 -12 -12 -12 z M 24 32 c -4 0 -7 -3 -7 -7 c 0 -4 3 -7 7 -7 c 4 0 7 3 7 7 c 0 4 -3 7 -7 7 z" />
+                    </g>
+                </g>
+            </svg>
+            <svg class="plus" fill="#8E9DFF" height="200px" width="200px" version="1.1" id="Layer_1"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 455 455"
+                xml:space="preserve" stroke="#8E9DFF">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#8E9DFF"
+                    stroke-width="12.74">
+                    <polygon
+                        points="455,212.5 242.5,212.5 242.5,0 212.5,0 212.5,212.5 0,212.5 0,242.5 212.5,242.5 212.5,455 242.5,455 242.5,242.5 455,242.5 ">
+                    </polygon>
+                </g>
+                <g id="SVGRepo_iconCarrier">
+                    <polygon
+                        points="455,212.5 242.5,212.5 242.5,0 212.5,0 212.5,212.5 0,212.5 0,242.5 212.5,242.5 212.5,455 242.5,455 242.5,242.5 455,242.5 ">
+                    </polygon>
+                </g>
+            </svg>
+        </div>
+        <div class="list">
+            <div class="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="license" onclick="displayDetails()">
+                <div class="licenseText">
+                    <p class="licenseTitle">Provisional Driver's Licence</p>
+                    <p class="licenseSub">Active until 18 November 2027</p>
+                </div>
+                <svg class="wheel" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10.2" stroke="#ffffff" stroke-width="3.1"/>
+                    <path d="M3 12.4 H21" stroke="#ffffff" stroke-width="2.6"/>
+                    <path d="M12 12.4 V21" stroke="#ffffff" stroke-width="2.6"/>
+                    <ellipse cx="12" cy="11.9" rx="5.1" ry="3.5" fill="#ffffff"/>
+                </svg>
+            </div>
+            <div class="lBlock"></div>
+        </div>
+        <div class="slideUpAuth">
+            <div style="background:#0D5A20;width:100%;padding:12px 0 10px 0;display:flex;align-items:center;position:relative;flex-shrink:0;">
+                <svg onclick="hideDetails()" style="position:absolute;left:12px;top:12px;width:22px;height:22px;cursor:pointer;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <div style="flex:1;text-align:center;">
+                    <p style="color:white;font-family:'LatoBold';font-size:15px;margin:0;line-height:1.3;pointer-events:none;">Provisional Driver's Licence</p>
+                    <p style="color:rgba(255,255,255,0.7);font-family:'Lato';font-size:11.5px;margin:0;margin-top:2px;pointer-events:none;">Active until 18 November 2027</p>
+                </div>
+            </div>
+            <div class="pin">
+                <p>This credential requires your PIN to access.</p>
+                <div id="pinDots" class="pinDots">
+                    <div class="pinDot"></div>
+                    <div class="pinDot"></div>
+                    <div class="pinDot"></div>
+                    <div class="pinDot"></div>
+                </div>
+            </div>
+            <div class="pinKeypad">
+                <div class="pinKeypad-row">
+                    <button class="pinKey" onclick="handlePinInput('1')"><span class="pinKey-num">1</span></button>
+                    <button class="pinKey" onclick="handlePinInput('2')"><span class="pinKey-num">2</span><span class="pinKey-letters">ABC</span></button>
+                    <button class="pinKey" onclick="handlePinInput('3')"><span class="pinKey-num">3</span><span class="pinKey-letters">DEF</span></button>
+                </div>
+                <div class="pinKeypad-row">
+                    <button class="pinKey" onclick="handlePinInput('4')"><span class="pinKey-num">4</span><span class="pinKey-letters">GHI</span></button>
+                    <button class="pinKey" onclick="handlePinInput('5')"><span class="pinKey-num">5</span><span class="pinKey-letters">JKL</span></button>
+                    <button class="pinKey" onclick="handlePinInput('6')"><span class="pinKey-num">6</span><span class="pinKey-letters">MNO</span></button>
+                </div>
+                <div class="pinKeypad-row">
+                    <button class="pinKey" onclick="handlePinInput('7')"><span class="pinKey-num">7</span><span class="pinKey-letters">PQRS</span></button>
+                    <button class="pinKey" onclick="handlePinInput('8')"><span class="pinKey-num">8</span><span class="pinKey-letters">TUV</span></button>
+                    <button class="pinKey" onclick="handlePinInput('9')"><span class="pinKey-num">9</span><span class="pinKey-letters">WXYZ</span></button>
+                </div>
+                <div class="pinKeypad-row">
+                    <div class="pinKey pinKey-empty"></div>
+                    <button class="pinKey" onclick="handlePinInput('0')"><span class="pinKey-num">0</span></button>
+                    <button class="pinKey pinKey-back" onclick="handlePinDelete()"><svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg></button>
+                </div>
+            </div>
+        </div>
+        <div class="slideUpSetup">
+            <input type="file" id="fileInput" accept=".idkey" hidden>
+
+        </div>
+        <div class="slideUpPWA">
+            <img class="safari1" src="./safari.png" />
+            <svg fill="#ffffff" class="safari2" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path d="M30.3 13.7L25 8.4l-5.3 5.3-1.4-1.4L25 5.6l6.7 6.7z"></path>
+                    <path d="M24 7h2v21h-2z"></path>
+                    <path
+                        d="M35 40H15c-1.7 0-3-1.3-3-3V19c0-1.7 1.3-3 3-3h7v2h-7c-.6 0-1 .4-1 1v18c0 .6.4 1 1 1h20c.6 0 1-.4 1-1V19c0-.6-.4-1-1-1h-7v-2h7c1.7 0 3 1.3 3 3v18c0 1.7-1.3 3-3 3z">
+                    </path>
+                </g>
+            </svg>
+            <img class="safari3" src="./homescreen.jpeg" />
+            <div class="bypassZone"></div>
+        </div>
+        <div class="slideUp">
+            <div class="header" style="background-color:#0D5A20;display:flex;align-items:flex-end;padding-bottom:8px;position:relative;height:6.5%;">
+                <svg onclick="hideDetails()" style="position:absolute;left:12px;bottom:12px;width:20px;height:20px;cursor:pointer;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.8"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <div style="flex:1;text-align:center;padding:0 40px;">
+                    <p style="color:white;font-family:'LatoBold';font-size:14.5px;margin:0;line-height:1.25;">Provisional Driver's Licence</p>
+                    <p style="color:rgba(255,255,255,0.65);font-family:'Lato';font-size:11px;margin:0;margin-top:1px;">Active until 18 November 2027</p>
+                </div>
+                <div style="position:absolute;right:14px;bottom:16px;display:flex;gap:3.5px;cursor:pointer;">
+                    <div style="width:4.5px;height:4.5px;border-radius:50%;background:white;"></div>
+                    <div style="width:4.5px;height:4.5px;border-radius:50%;background:white;"></div>
+                    <div style="width:4.5px;height:4.5px;border-radius:50%;background:white;"></div>
+                </div>
+            </div>
+            <div class="header2">
+                <div class="selected first" onclick="selectFirst()">
+                    <p>Overview</p>
+                </div>
+                <div class="second" onclick="selectSecond()">
+                    <p>Details</p>
+                </div>
+                <div class="yellowBar left"></div>
+            </div>
+            <div class="licenceContent">
+                <div class="licenseMain">
+                    <div style="height:255px">
+                        <img class="bg" src="./state.png" />
+                        <p class="label a">Licence Number</p>
+                        <p class="id a" id="numb" style="letter-spacing:0.2px"></p>
+                        <p class="label b">Date of Birth</p>
+                        <p class="id b" id="dob"></p>
+                        <p class="label c">Class</p>
+                        <p class="id c">C</p>
+                        <div class="photo">
+                            <img class="id-img" id='idImg' src="" />
+                            <div class="animation">
+                                <div class="bg"></div>
+                                <div class="text"> <b>1 JAN</b><br>12:32</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="line"></div>
+                    <div style="height:auto;flex-grow:1">
+                        <p class="id d" id="name" style="letter-spacing:0px;"></p>
+                        <p class="label d" id="addr"></p>
+                        <p class="block">P1</p>
+                    </div>
+                    <div class="line">
+                    </div>
+                    <div class="bottom">
+                        <img class="barcode" src="./barcode.png" />
+                    </div>
+                </div>
+                <div class="detailsMain" style="overflow-y:scroll">
+                    <p class="lable1">Card Identification Number</p>
+                    <p class="text1">D03553709</p>
+                    <p class="lable2">This number is generated at the time the physical card is issued and is a security
+                        feature to ensure the card is legitimate.</p>
+                    <div class="line">
+                    </div>
+                    <p class="text2">0</p>
+                    <p class="lable3">Demerit points accumulated</p>
+                    <p class="lable4">These points are added when you commit offences. If you accrue four or more
+                        demerit
+                        points on your provisional licence you will be disqualified from driving for 6 months.</p>
+                    <p class="text3" style="pointer-events:all;touch-action: auto;"
+                        onclick="window.open('https:\/\/www.sa.gov.au/topics/driving-and-transport/offences/check-demerit-points')">
+                        Learn More</p>
+                    <div class="line">
+                    </div>
+                    <p class="lable5">Classes</p>
+                    <p class="text4"><b class="aaa">C</b>      Car</p>
+                    <p class="text5" style="pointer-events:all;touch-action: auto;"
+                        onclick="window.open('https:\/\/www.sa.gov.au/topics/driving-and-transport/drivers-and-licences/drivers-licence/driver-s-licence-classes')">
+                        Learn More</p>
+                    <div class="line">
+                    </div>
+                    <p class="lable6">Signature</p>
+                    <img class="siggy" src="./example-signature.png">
+                    <div class="line">
+                    </div>
+                    <p class="lable7">General</p>
+                    <p class="text6">Must be carried while driving</p>
+
+                    <div class="line">
+                    </div>
+                    <p class="lable8">Scope</p>
+                    <p class="text7">Use of this permit/licence for identification purposes, other than for policing
+                        road traffic laws, is not indended or authorised, and is solely at the risk of the user.</p>
+
+                    <div class="line"></div>
+                    <p class="lable9">Has your address changed?</p>
+                    <p class="text8">Change of address must be notified within 14 days either by phone or online</p>
+                    <div class="line"></div>
+                    <div class="renewSect mogus"
+                        onclick="window.open('https:\/\/account.ezyreg.sa.gov.au/account/driver-licence-renew.htm')">
+                        <img src="./globe.jpeg" />
+                        <p>Renew Your Licence</p>
+                    </div>
+                    <div class="line"></div>
+                    <div class="suppSec mogus" onclick="window.open('tel:131084','General Support')">
+                        <img src="./phone.jpeg" />
+                        <p><u>General Support</u><br>13 10 84</p>
+                    </div>
+                    <div class="line"></div>
+                    <img class="govfoot" src="./govfoot.jpg" />
+                    <div class="line" style="margin-bottom:35px"></div>
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+        <div class="settingsMain">
+            <h>Settings</h>
+            <div class="backtocreds">
+                <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                        stroke-width="0">
+                        <g>
+                            <path
+                                d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                            </path>
+                        </g>
+                    </g>
+                    <g id="SVGRepo_iconCarrier">
+                        <g>
+                            <path
+                                d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                            </path>
+                        </g>
+                    </g>
+                </svg>
+                <p>Credentials</p>
+            </div>
+            <div class="setList">
+                <div class="spacer"></div>
+
+                <div>
+                    <p>Change Password</p>
+                    <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="0">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div class="nohov">
+                    <p>Unlock with Face ID</p>
+                    <label class="switch">
+                        <input type="checkbox" checked="true">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="nohob">
+                    <p>Validation Sounds</p>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div>
+                    <p>Renewal Reminders</p>
+                    <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="0">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div class="spacer"></div>
+                <div>
+                    <p>Validation History</p>
+                    <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="0">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div>
+                    <p>About</p>
+                    <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="0">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div>
+                    <p>Troubleshooting</p>
+                    <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="0">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div>
+                    <p>Send Feedback</p>
+                    <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 30.725 30.725" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC"
+                            stroke-width="0">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path
+                                    d="M24.078,26.457c0.977,0.978,0.977,2.559,0,3.536c-0.488,0.488-1.128,0.731-1.77,0.731c-0.639,0-1.278-0.243-1.768-0.731 L5.914,15.362l14.629-14.63c0.977-0.977,2.559-0.976,3.535,0c0.977,0.977,0.977,2.56,0,3.536L12.984,15.362L24.078,26.457z">
+                                </path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div class="spacer">
+                    <p>Version 1.8.9 (175023)</p>
+                </div>
+                <div>
+                    <p>Log Out</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    </div>
+
+
+    <script>
+
+        document.querySelector(".bypassZone").onclick = () => {
+
+
+            window.localStorage.setItem("pwabypass", true);
+            document.querySelector(".slideUpPWA").classList.remove("active")
+            setup()
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        document.querySelector(".backtocreds").onclick = async () => {
+            document.querySelector(".settingsMain").classList.remove("shown")
+
+
+        }
+        document.querySelector(".settings").onclick = async () => {
+            document.querySelector(".settingsMain").classList.add("shown")
+            document.querySelector(".settings").style.fill = 'rgba(50,50,100,1)'
+            await new Promise((r) => { setTimeout(r, 300) })
+            document.querySelector(".settings").style.fill = null
+
+        }
+
+        document.addEventListener("dblclick", event => {
+            event.preventDefault()
+        })
+        var scale;
+        function hammerIt(elm) {
+            hammertime = new Hammer(elm, {
+                doubleTapDistance: 200,
+                doubleTapInterval: 500
+
+            });
+            hammertime.get('pinch').set({
+                enable: true
+            });
+
+            var posX = 0,
+                posY = 0,
+                last_scale = 1,
+                last_posX = 0,
+                last_posY = 0,
+                max_pos_x = 0,
+                max_pos_y = 0,
+                transform = "",
+                el = elm;
+
+            scale = 1
+            var lastTime = Date.now()
+            hammertime.on('tap', () => {
+                if (Date.now() - lastTime < 600) {
+                    transform =
+                        //"translate3d(0, 0, 0) " +
+                        "scale3d(3, 3, 1) ";
+                    scale = 3;
+                    last_scale = 3;
+                    try {
+                        if (window.getComputedStyle(el, null).getPropertyValue('-webkit-transform').toString() != "matrix(1, 0, 0, 1, 0, 0)") {
+                            transform =
+                                //"translate3d(0, 0, 0) " +
+                                "scale3d(1, 1, 1) ";
+                            scale = 1;
+                            last_scale = 1;
+                        }
+                    } catch (err) { }
+                    el.style.webkitTransform = transform;
+                    transform = "";
+                    lastTime = Date.now() - 4000
+
+                }
+                else {
+                    lastTime = Date.now()
+
+                }
+            })
+
+            hammertime.on('doubletap pan pinch panend pinchend', function (ev) {
+                if (ev.type == "doubletap") {
+                    return
+                    transform =
+                        //"translate3d(0, 0, 0) " +
+                        "scale3d(3, 3, 1) ";
+                    scale = 3;
+                    last_scale = 3;
+                    try {
+                        if (window.getComputedStyle(el, null).getPropertyValue('-webkit-transform').toString() != "matrix(1, 0, 0, 1, 0, 0)") {
+                            transform =
+                                //"translate3d(0, 0, 0) " +
+                                "scale3d(1, 1, 1) ";
+                            scale = 1;
+                            last_scale = 1;
+                        }
+                    } catch (err) { }
+                    el.style.webkitTransform = transform;
+                    transform = "";
+                }
+
+                //pan    
+                if (scale != 1) {
+                    posX = last_posX + ev.deltaX;
+                    posY = last_posY + ev.deltaY;
+                    max_pos_x = Math.ceil((scale - 1) * el.clientWidth / 2);
+                    max_pos_y = Math.ceil((scale - 1) * el.clientHeight / 2);
+                    if (posX > max_pos_x) {
+                        posX = max_pos_x;
+                    }
+                    if (posX < -max_pos_x) {
+                        posX = -max_pos_x;
+                    }
+                    if (posY > max_pos_y) {
+                        posY = max_pos_y;
+                    }
+                    if (posY < -max_pos_y) {
+                        posY = -max_pos_y;
+                    }
+                }
+
+
+                //pinch
+                if (ev.type == "pinch") {
+                    scale = Math.max(.999, Math.min(last_scale * (ev.scale), 4));
+                }
+                if (ev.type == "pinchend") { last_scale = scale; }
+
+                //panend
+                if (ev.type == "panend") {
+                    last_posX = posX < max_pos_x ? posX : max_pos_x;
+                    last_posY = posY < max_pos_y ? posY : max_pos_y;
+                }
+                scale = Math.max(scale, 1)
+                if (scale == 1) {
+                    posX = 0;
+                    posY = 0;
+                }
+                if (scale != 1) {
+                    transform =
+                        "translate3d(" + posX + "px," + posY + "px, 0) " +
+                        "scale3d(" + scale + ", " + scale + ", 1)";
+                }
+                if (posX == 0 && posY == 0) transform = "scale3d(" + scale + ", " + scale + ", 1)";
+                if (transform) {
+                    el.style.webkitTransform = transform;
+                }
+            });
+        }
+
+        hammerIt(document.querySelector(".id-img2"));
+
+
+        function hammerItMove(elm) {
+            hammertime = new Hammer(elm, {});
+
+
+            var posX = 0,
+                posY = 0,
+                last_posX = 0,
+                last_posY = 0,
+                max_pos_x = 600,
+                max_pos_y = 600,
+                transform = "",
+                el = elm;
+
+            hammertime.on('pan panend', function (ev) {
+                if (scale < 0.95) return
+                if (ev.isFinal) {
+                    document.querySelector(".id-img2").style.transition = null
+                    document.querySelector(".fullScreenPhoto").style.transition = null
+
+                    if (Math.abs(posY) > 200) {
+
+                        document.querySelector(".id-img2").style.webkitTransform = ''
+                        document.querySelector(".fullScreenPhoto").classList.remove("show")
+
+                        setTimeout(() => {
+                            document.getElementById("idImg").style.opacity = 1
+                        }, 290)
+                        el.style.backgroundColor = null
+                        el.style.outline = 'rgba(0,0,0,0)'
+                        transform =
+                            "translate3d(" + 0 + "px," + 0 + "px, 0) "
+                        el.style.webkitTransform = transform;
+                        document.querySelector(".x").style.opacity = 1
+
+                        return
+                    }
+                    if (Math.abs(posX) > 200) {
+                        document.querySelector(".id-img2").style.webkitTransform = ''
+                        document.querySelector(".fullScreenPhoto").classList.remove("show")
+                        setTimeout(() => {
+                            document.getElementById("idImg").style.opacity = 1
+                        }, 290)
+                        el.style.backgroundColor = null
+                        el.style.outline = 'rgba(0,0,0,0)'
+                        transform =
+                            "translate3d(" + 0 + "px," + 0 + "px, 0) "
+                        el.style.webkitTransform = transform;
+                        document.querySelector(".x").style.opacity = 1
+
+                        return
+                    }
+
+                    document.querySelector(".x").style.opacity = 1
+
+                    document.querySelector(".id-img2").style.webkitTransform = `scale3d(1,1,1)`
+
+                    transform =
+                        "translate3d(" + 0 + "px," + 0 + "px, 0) "
+                    el.style.webkitTransform = transform;
+                    el.style.backgroundColor = `rgba(0,0,0,1)`
+                    el.style.outline = `500px solid black`
+
+
+                    return
+                } else {
+                    document.querySelector(".fullScreenPhoto").style.transition = "0s"
+                    document.querySelector(".id-img2").style.transition = "0s"
+
+
+                }
+                posX = last_posX + ev.deltaX;
+                posY = last_posY + ev.deltaY;
+                max_pos_x = 350
+                max_pos_y = Math.ceil(el.clientHeight / 2);
+                if (posX > max_pos_x) {
+                    posX = max_pos_x;
+                }
+                if (posX < -max_pos_x) {
+                    posX = -max_pos_x;
+                }
+                if (posY > max_pos_y) {
+                    posY = max_pos_y;
+                }
+                if (posY < -max_pos_y) {
+                    posY = -max_pos_y;
+                }
+                el.style.backgroundColor = `rgba(0,0,0,${(1 - Math.abs(posY) / 300)})`
+                el.style.outline = `500px solid rgba(0,0,0,${(1 - Math.abs(posY) / 300)})`
+                document.querySelector(".x").style.opacity = Math.pow(1 - Math.abs(posY) / 300, 10)
+
+                transform =
+                    "translate3d(" + posX + "px," + posY + "px, 0) "
+                el.style.webkitTransform = transform;
+                document.querySelector(".id-img2").style.webkitTransform = `scale3d(${1 - Math.abs(posY) / 600},${1 - Math.abs(posY) / 600},1)`
+                console.log(ev.deltaX)
+            });
+
+        }
+
+        hammerItMove(document.querySelector(".fullScreenPhoto"));
+
+
+
+
+        document.querySelector(".x").onclick = () => {
+            document.querySelector(".id-img2").style.webkitTransform = ''
+            document.querySelector(".fullScreenPhoto").classList.remove("show")
+            document.querySelector(".fullScreenPhoto").style.backgroundColor = null
+            document.querySelector(".fullScreenPhoto").style.outline = null
+            document.querySelector(".x").style.opacity = null
+
+
+            setTimeout(() => {
+                document.getElementById("idImg").style.opacity = 1
+            }, 290)
+        }
+
+
+        function hammerItIdImg(elm) {
+            hammertime = new Hammer(elm, {
+                doubleTapDistance: 100,
+                doubleTapInterval: 500
+
+            });
+            var lastTap = Date.now()
+            hammertime.on('tap', function (ev) {
+                if (Date.now() - lastTap < 600) {
+                    document.querySelector(".fullScreenPhoto").classList.add("show")
+                    setTimeout(() => {
+                        document.getElementById("idImg").style.opacity = 0
+                    }, 1)
+
+                    let zoomedIn = false;
+                    const element = document.querySelector(".fullScreenPhoto")
+
+                }
+                lastTap = Date.now()
+            })
+            hammertime.on('doubletap', function (ev) {
+                document.querySelector(".fullScreenPhoto").classList.add("show")
+                document.querySelector(".x").style.opacity = 1
+                setTimeout(() => {
+                    document.getElementById("idImg").style.opacity = 0
+                }, 1)
+
+                let zoomedIn = false;
+                const element = document.querySelector(".fullScreenPhoto")
+
+            }
+            )
+
+
+        }
+
+        hammerItIdImg(document.querySelector("#idImg"));
+        const isInStandaloneMode = () =>
+            (((window.matchMedia('(display-mode: standalone)').matches) || (window.navigator.standalone) || document.referrer.includes('android-app://')) || window.localStorage.getItem("pwabypass") == 'true');
+
+
+        async function trial() {
+            document.getElementById("theme-color-meta").content = '#000000'
+
+            document.getElementById("numb").innerText = "JE502"
+            document.getElementById("dob").innerText = "04/02/2008"
+            document.getElementById("name").innerText = "JOEL CHRISTIAN BATES"
+            document.getElementById("addr").innerText = "18 GIBSON ST EVANSTON GARDENS SA 5116"
+            document.getElementById("idImg").src = "./photo.png"
+            document.getElementById("idImg2").src = "./photo.png"
+
+            await new Promise(r => { setTimeout(r, 1500) })
+            document.querySelector(".intro").classList.add('introbye')
+            document.querySelector(".slideUpSetup").classList.remove("active")
+
+            return
+        }
+
+        async function init() {
+            if (window.localStorage.getItem('appVersion') !== '1.8.9') {
+                window.localStorage.removeItem('id');
+                window.localStorage.setItem('appVersion', '1.8.9');
+            }
+
+            if (false) {
+                document.querySelector(".slideUpPWA").classList.add("active")
+                await new Promise(r => { setTimeout(r, 1500) })
+                document.querySelector(".intro").classList.add('introbye')
+
+
+            } else {
+                try {
+                    var data = JSON.parse(atob(window.localStorage.getItem("id")))
+                    if (!data.licenceNumber || !data['DOB'] || !data.name || !data.address || !data.imgData) throw new Error('h')
+                    document.getElementById("numb").innerText = data.licenceNumber
+                    document.getElementById("dob").innerText = data['DOB']
+                    document.getElementById("name").innerText = data.name
+                    document.getElementById("addr").innerText = data.address
+                    document.getElementById("idImg").src = data.imgData
+                    document.getElementById("idImg2").src = data.imgData
+                    if (data.signatureImgData) document.querySelector(".siggy").src = data.signatureImgData
+
+                    //generate: btoa(JSON.stringify({"licenceNumber":"", "DOB":"","name":"","address":"","imgData":"b64 data url","signatureImgData":"b64 data url"}))
+                } catch (e) {
+                    trial()
+                    return
+                }
+
+
+
+
+                await new Promise(r => { setTimeout(r, 1500) })
+                document.querySelector(".intro").classList.add('introbye')
+                document.getElementById("theme-color-meta").content = '#000000'
+                await new Promise(r => { setTimeout(r, 500) })
+
+            }
+        }
+        init()
+
+        function setup() {
+            document.getElementById("theme-color-meta").content = '#000000'
+            document.querySelector(".slideUpSetup").classList.add("active")
+        }
+
+
+        document.getElementById('fileInput').addEventListener('change', async function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    const text = e.target.result;
+                    document.querySelector(".intro").classList.remove('introbye')
+                    await new Promise(r => { setTimeout(r, 300) })
+                    document.querySelector(".slideUpSetup").classList.remove("active")
+
+
+                    window.localStorage.setItem("id", text)
+                    init()
+                };
+                reader.readAsText(file);
+            }
+        });
+
+
+        var hasAuthed = false;
+        var lastShake = Date.now()
+        async function showShakeAnimation() {
+            if (Date.now() - lastShake < 6000) return;
+            lastShake = Date.now()
+            document.querySelector(".animation>.text").innerHTML = getCurrentDateTime()
+            document.querySelector(".animation").classList.add("go")
+            await new Promise(r => { setTimeout(r, 3500) })
+            document.querySelector(".animation").classList.add("go2")
+            await new Promise(r => { setTimeout(r, 1000) })
+            document.querySelector(".animation").classList.add("go3")
+            await new Promise(r => { setTimeout(r, 1000) })
+            document.querySelector(".animation").classList.remove("go")
+            document.querySelector(".animation").classList.remove("go2")
+            document.querySelector(".animation").classList.remove("go3")
+
+        }
+        function getCurrentDateTime() {
+            const date = new Date();
+
+            // Get day
+            const day = String(date.getDate()).padStart(2, '0');
+
+            // Get month (short format)
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+            // Get hours and minutes
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            // Format date and time
+            const formattedDateTime = `<b>${day} ${month}</b><br>${hours}:${minutes}`;
+
+            return formattedDateTime;
+        }
+
+        function selectFirst() {
+            isScriptScroll = true
+            document.querySelector(".licenceContent").scrollTo({
+                left: 0,
+                top: 0,
+                behavior: "smooth",
+            })
+            document.querySelector(".yellowBar").classList.add("left")
+            document.querySelector(".yellowBar").classList.remove("right")
+            setTimeout(() => {
+                isScriptScroll = false
+            }, 1000);
+
+        }
+        function selectSecond() {
+            isScriptScroll = true
+            document.querySelector(".licenceContent").scrollTo({
+                left: 9999,
+                top: 0,
+                behavior: "smooth",
+            })
+            document.querySelector(".yellowBar").classList.add("right")
+            document.querySelector(".yellowBar").classList.remove("left")
+            setTimeout(() => {
+                isScriptScroll = false
+            }, 1000);
+        }
+
+        const main = document.querySelector('.licenceContent');
+        var isScriptScroll = false;
+        const scrollEvent = () => {
+            if (isScriptScroll) return
+            if (document.querySelector('.licenceContent').scrollLeft >= window.innerWidth - 200) {
+                document.querySelector(".yellowBar").classList.add("right")
+                document.querySelector(".yellowBar").classList.remove("left")
+            }
+            if (document.querySelector('.licenceContent').scrollLeft <= 200) {
+                document.querySelector(".yellowBar").classList.add("left")
+                document.querySelector(".yellowBar").classList.remove("right")
+            }
+
+        }
+
+
+        main.addEventListener('scroll', scrollEvent);
+
+
+
+
+
+        function resetPinDots() {
+            var dots = document.querySelectorAll('.pinDot');
+            for (var i = 0; i < dots.length; i++) dots[i].classList.remove('filled');
+        }
+
+        function updatePinDots() {
+            var dots = document.querySelectorAll('.pinDot');
+            for (var i = 0; i < dots.length; i++) {
+                if (i < pinEntry.length) dots[i].classList.add('filled');
+                else dots[i].classList.remove('filled');
+            }
+        }
+
+        function displayDetails() {
+            requestMotionPermission()
+            pinEntry = '';
+            resetPinDots();
+            document.querySelector(".slideUpAuth").style = 'top:1%;'
+        }
+
+        async function hideDetails() {
+            hasAuthed = false;
+            pinEntry = '';
+            resetPinDots();
+            document.querySelector(".slideUp").style = 'top:100%;'
+            document.querySelector(".slideUpAuth").style = 'top:100%;'
+            document.querySelector(".detailsMain").scrollTo(0, 0)
+            await new Promise(r => { setTimeout(r, 200) })
+            selectFirst()
+        }
+
+
+        if ("serviceWorker" in navigator) {
+
+            navigator.serviceWorker.register("./sw.js").then(
+                (registration) => {
+                    console.log("Service worker registration succeeded:", registration);
+                },
+                (error) => {
+                    console.error(`Service worker registration failed: ${error}`);
+                },
+            );
+        } else {
+            console.error("Service workers are not supported.");
+        }
+
+
+        var pinEntry = '';
+        var correctPin = '2010';
+
+        function handlePinInput(num) {
+            if (pinEntry.length >= 4) return;
+            pinEntry += num;
+            updatePinDots();
+            if (pinEntry.length === 4) {
+                setTimeout(function() {
+                    if (pinEntry === correctPin) {
+                        document.querySelector(".slideUpAuth").style = 'top:100%;'
+                        setTimeout(function() {
+                            document.querySelector(".slideUp").style = 'top:0%;'
+                            hasAuthed = true;
+                        }, 400);
+                    } else {
+                        resetPinDots();
+                        pinEntry = '';
+                    }
+                }, 300);
+            }
+        }
+
+        function handlePinDelete() {
+            if (pinEntry.length === 0) return;
+            pinEntry = pinEntry.slice(0, -1);
+            updatePinDots();
+        }
+
+        var motionPermissionGranted = window.localStorage.getItem('motionGranted') === 'true';
+        function requestMotionPermission() {
+            if (motionPermissionGranted) return;
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission().then(function(state) {
+                    if (state === 'granted') {
+                        motionPermissionGranted = true;
+                        window.localStorage.setItem('motionGranted', 'true');
+                        myShakeEvent.stop();
+                        myShakeEvent.start();
+                    }
+                }).catch(function(){});
+            } else {
+                motionPermissionGranted = true;
+            }
+        }
+
+        async function authenticateUser() {
+        }
+
+
+        document.querySelector(".plus").addEventListener("click", function() {
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission()
+                    .then(async (permissionState) => {
+                        if (permissionState === "granted") {
+                            motionPermissionGranted = true;
+                            myShakeEvent.stop();
+                            myShakeEvent.start();
+                            document.querySelector(".plus").style.fill = "green";
+                            await new Promise(r => { setTimeout(r, 500) })
+                            document.querySelector(".plus").style.fill = "";
+                        } else {
+                            document.querySelector(".plus").style.fill = "red";
+                            await new Promise(r => { setTimeout(r, 500) })
+                            document.querySelector(".plus").style.fill = "";
+                        }
+                    })
+                    .catch(console.error);
+            }
+        })
+
+        var myShakeEvent = new Shake({
+            threshold: 8,
+            timeout: 500
+        });
+        myShakeEvent.start();
+        window.addEventListener('shake', shakeEventDidOccur, false);
+
+        function shakeEventDidOccur() {
+            showShakeAnimation()
+        }
+
+        var scannerStream = null;
+        function openScanner() {
+            document.getElementById('scannerOverlay').style.display = 'block';
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(function(stream) {
+                    scannerStream = stream;
+                    document.getElementById('scannerVideo').srcObject = stream;
+                })
+                .catch(function(err) {
+                    console.error('Camera error:', err);
+                });
+        }
+        function closeScanner() {
+            document.getElementById('scannerOverlay').style.display = 'none';
+            if (scannerStream) {
+                scannerStream.getTracks().forEach(function(t) { t.stop(); });
+                scannerStream = null;
+            }
+            document.getElementById('scannerVideo').srcObject = null;
+        }
+
+        var lastRefreshTime = Date.now();
+        function updateRefreshText() {
+            var diff = Math.floor((Date.now() - lastRefreshTime) / 60000);
+            var el = document.getElementById('refreshText');
+            if (!el) return;
+            if (diff < 1) el.innerText = 'Refreshed just now';
+            else if (diff === 1) el.innerText = 'Refreshed 1 minute ago';
+            else el.innerText = 'Refreshed ' + diff + ' minutes ago';
+        }
+        setInterval(updateRefreshText, 30000);
+
+        var pullStartY = 0;
+        var listEl = document.querySelector('.list');
+        if (listEl) {
+            listEl.addEventListener('touchstart', function(e) {
+                if (listEl.scrollTop <= 0) pullStartY = e.touches[0].clientY;
+            }, {passive: true});
+            listEl.addEventListener('touchend', function(e) {
+                var pullDist = e.changedTouches[0].clientY - pullStartY;
+                if (pullDist > 80 && listEl.scrollTop <= 0) {
+                    lastRefreshTime = Date.now();
+                    updateRefreshText();
+                }
+                pullStartY = 0;
+            }, {passive: true});
+        }
+    </script>
+</body>
+
+</html>

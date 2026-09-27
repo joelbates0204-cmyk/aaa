@@ -1,0 +1,42 @@
+workflows:
+  ios-demo-ipa:
+    name: SA Digital Wallet Demo iOS
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+
+    environment:
+      xcode: latest
+      node: latest
+
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          npm install
+
+      - name: Create iOS project
+        script: |
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Build unsigned iOS archive
+        script: |
+          xcodebuild archive \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath "$CM_BUILD_DIR/SA-Digital-Wallet-Demo.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Package unsigned IPA
+        script: |
+          APP_PATH="$CM_BUILD_DIR/SA-Digital-Wallet-Demo.xcarchive/Products/Applications/App.app"
+          mkdir -p "$CM_BUILD_DIR/Payload"
+          cp -R "$APP_PATH" "$CM_BUILD_DIR/Payload/App.app"
+          cd "$CM_BUILD_DIR"
+          zip -qry "SA-Digital-Wallet-Demo-unsigned.ipa" Payload
+
+    artifacts:
+      - $CM_BUILD_DIR/SA-Digital-Wallet-Demo-unsigned.ipa
+      - $CM_BUILD_DIR/SA-Digital-Wallet-Demo.xcarchive
